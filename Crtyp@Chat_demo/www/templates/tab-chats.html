@@ -1,16 +1,16 @@
 <ion-view view-title="Chats">
   <ion-content>
-    <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in chats" type="item-text-wrap" href="#/tab/chats/{{chat.id}}">
-        <img ng-src="{{chat.face}}">
-        <h2>{{chat.name}}</h2>
-        <p>{{chat.lastText}}</p>
-        <i class="icon ion-chevron-right icon-accessory"></i>
+    <div class="list">
 
-        <ion-option-button class="button-assertive" ng-click="remove(chat)">
-          Delete
-        </ion-option-button>
-      </ion-item>
-    </ion-list>
+      <button class="button button-full button-positive" ng-click="addContact()"><i class="icon ion-plus-round">   Add contact</i></button>
+      <!-- contacts-->
+      <a class="item item-avatar" href="#" ng-repeat="contact in contacts">
+        <img src="http://1.viki.io/a/ph/avatar_profile-acc6c5a5a9d35bd7d292dfd776cfec76.png?s=30x30&f=t&cb=1">
+        <h2>{{contact}}</h2>
+      </a>
+      <!-- contacts-->
+
+
+  </div>
   </ion-content>
 </ion-view>
