@@ -1,0 +1,16 @@
+<ion-view view-title="Contacts">
+  <ion-content>
+    <div class="list">
+
+      <button class="button button-full button-positive" ng-click="addContact()"><i class="icon ion-plus-round">   Add contact</i></button>
+      <!-- contacts-->
+      <a class="item item-avatar" href="#" ng-repeat="contact in contacts" ng-click="call(contact)">
+        <img src="http://1.viki.io/a/ph/avatar_profile-acc6c5a5a9d35bd7d292dfd776cfec76.png?s=30x30&f=t&cb=1">
+        <h2>{{contact}}</h2>
+      </a>
+      <!-- contacts-->
+      <video id="audio" ng-src="{{audioStream}}"></video>
+
+  </div>
+  </ion-content>
+</ion-view>

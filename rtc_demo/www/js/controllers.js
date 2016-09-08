@@ -1,3 +1,5 @@
+
+
 angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope) {})
@@ -19,6 +21,7 @@ angular.module('starter.controllers', [])
   $scope.call = function(userId) {call($scope,$ionicPopup,userId);};
 
 
+
 })
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
@@ -34,10 +37,11 @@ angular.module('starter.controllers', [])
 
 
 function onCallEv($scope,$ionicPopup){
-  $scope.peer.on('call', function(call) {
-  navigator.webkitGetUserMedia({video: false, audio: true}, function(stream) {
+  $scope.peer.on('call', function(callObj) {
+  console.log('call',callObj);
+  navigator.webkitGetUserMedia({video: true, audio: true}, function(stream) {
 
-     onCallEvPopup($scope,$ionicPopup,call,stream);
+     onCallEvPopup($scope,$ionicPopup,callObj,stream);
     //call.answer(stream); // Answer the call with an A/V stream.
     /*call.on('stream', function(remoteStream) {
       // Show stream in some video/canvas element.
@@ -49,20 +53,25 @@ function onCallEv($scope,$ionicPopup){
 }
 
 function call($scope,$ionicPopup,userId){
-  navigator.webkitGetUserMedia({video: false, audio: true}, function(stream) {
-    var call = $scope.peer.call(userId, stream);
-    $scope.showAlert = function() {
+  navigator.webkitGetUserMedia({video: true, audio: true}, function(stream) {
+    var callObj = $scope.peer.call(userId, stream);
+    callObj.on('stream',function(RemoteStream){
+
+      var audio = new Audio();
+      audio.src = URL.createObjectURL(RemoteStream);
+      audio.play();
+    });
+    //document.getElementById('audio').setAttribute('src',URL.createObjectURL(stream));
       var alertPopup = $ionicPopup.alert({
         title: 'Call',
-        template: 'wtih ' + call.peer,
+        template: 'wtih ' + userId,
         okText: 'End call',
         okType: 'button-assertive'
       });
 
       alertPopup.then(function(res) {
-        call.close();
+        callObj.close();
       });
-    };
 
 
     /*call.on('stream', function(remoteStream) {
@@ -93,7 +102,8 @@ function showAuth($scope,$ionicPopup){
             e.preventDefault();
           } else {
             ///doLogin
-              $scope.peer = new Peer($scope.data.user.login,{key: '4n29bbhg157mn29'});
+              $scope.peer = new Peer($scope.data.user.login,{key: '4n29bbhg157mn29',debug: 3});
+              //$scope.peer = Peer($scope.data.user.login, {host: 'c2crtcdemo.herokuapp.com', port: 9000, path: '/myapp'}); //https://c2crtcdemo.herokuapp.com/
               onCallEv($scope,$ionicPopup);
           }
         }
@@ -127,8 +137,8 @@ function addContact($scope,$ionicPopup){
 
 
 
-function onCallEvPopup($scope,$ionicPopup,call,stream){
-  $scope.showConfirm = function() {
+function onCallEvPopup($scope,$ionicPopup,callObj,stream){
+
   var confirmPopup = $ionicPopup.confirm({
     title: 'Incoming call',
     template: call.peer,
@@ -140,25 +150,34 @@ function onCallEvPopup($scope,$ionicPopup,call,stream){
 
   confirmPopup.then(function(res) {
     if(res) {
-      call.answer(stream);
+      //document.getElementById('audio').setAttribute('src',URL.createObjectURL(stream));
+      callObj.answer(stream);
+      callObj.on('stream', function(RemoteStream) {
+        // `stream` is the MediaStream of the remote peer.
+        // Here you'd add it to an HTML video/canvas element.
+          var audio = new Audio();
+          audio.src = URL.createObjectURL(RemoteStream);
+          audio.play();
+      });
+
+      //$scope.audioStream = URL.createObjectURL(stream);
       ////////////////////////////////
 
-      $scope.showAlert = function() {
-        var alertPopup = $ionicPopup.alert({
+
+        var alertPopupCall = $ionicPopup.alert({
           title: 'Call',
-          template: 'wtih ' + call.peer,
+          template: 'wtih ' + callObj.peer,
           okText: 'End call',
           okType: 'button-assertive'
         });
 
-        alertPopup.then(function(res) {
-          call.close();
+        alertPopupCall.then(function(res) {
+          callObj.close();
         });
-      };
+
       ////////////////////////////////
 
     }
   });
-};
 
 }
