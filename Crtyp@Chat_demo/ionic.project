@@ -1,3 +1,10 @@
 {
-  "name": "Webrtc_Demo"
+  "name": "Webrtc_Demo",
+  "browsers": [
+    {
+      "platform": "android",
+      "browser": "crosswalk",
+      "version": "12.41.296.5"
+    }
+  ]
 }
